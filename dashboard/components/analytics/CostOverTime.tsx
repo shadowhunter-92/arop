@@ -60,7 +60,7 @@ export function CostOverTime({ data }: Props) {
             fontSize: 11,
           }}
           labelStyle={{ color: "#94a3b8" }}
-          formatter={(v: number) => [fmt(v), "Cost"]}
+          formatter={(v) => [fmt(v as number), "Cost"]}
         />
         <Area
           type="monotone"

@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { ReplayPanel } from "@/components/replay/ReplayPanel"
 import { api } from "@/lib/api"
 import type { TraceDetail } from "@/lib/types"
 
-export default function ReplayPage() {
+function ReplayContent() {
   const params = useSearchParams()
   const traceId = params.get("trace_id") ?? ""
   const [trace, setTrace] = useState<TraceDetail | null>(null)
@@ -35,7 +35,6 @@ export default function ReplayPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      {/* Trace ID input */}
       <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-4 space-y-3">
         <p className="text-xs text-slate-400 font-medium">Trace ID</p>
         <div className="flex items-center gap-2">
@@ -85,5 +84,13 @@ export default function ReplayPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function ReplayPage() {
+  return (
+    <Suspense fallback={<div className="max-w-3xl mx-auto py-12 text-center text-sm text-slate-600">Loading…</div>}>
+      <ReplayContent />
+    </Suspense>
   )
 }

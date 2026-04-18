@@ -67,7 +67,7 @@ export function CostByModel({ data }: Props) {
             fontSize: 11,
           }}
           cursor={{ fill: "rgba(99,102,241,0.08)" }}
-          formatter={(v: number) => [fmt(v), "Cost"]}
+          formatter={(v) => [fmt(v as number), "Cost"]}
         />
         <Bar dataKey="cost_usd" radius={[0, 4, 4, 0]}>
           {sorted.map((_, i) => (

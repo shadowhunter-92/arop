@@ -3,7 +3,6 @@ import type {
   CostAnalytics,
   Guardrail,
   GuardrailCreate,
-  ModelPricing,
   ReplayResponse,
   TraceDetail,
   TraceListResponse,

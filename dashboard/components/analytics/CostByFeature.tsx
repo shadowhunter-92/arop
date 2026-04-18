@@ -59,7 +59,7 @@ export function CostByFeature({ data }: Props) {
             borderRadius: 8,
             fontSize: 11,
           }}
-          formatter={(v: number) => [fmt(v), "Cost"]}
+          formatter={(v) => [fmt(v as number), "Cost"]}
         />
         <Legend
           iconType="circle"

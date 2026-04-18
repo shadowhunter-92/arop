@@ -81,7 +81,7 @@ export function ApiKeyManager({ apiKeys, onRefresh }: Props) {
       {/* New key revealed after creation */}
       {created && (
         <div className="rounded-lg border border-emerald-800/60 bg-emerald-950/20 px-4 py-3 space-y-1">
-          <p className="text-xs text-emerald-400 font-medium">Key created — copy now, won't be shown again</p>
+          <p className="text-xs text-emerald-400 font-medium">Key created &mdash; copy now, won&apos;t be shown again</p>
           <code className="text-xs text-emerald-300 font-mono break-all">{created.key}</code>
         </div>
       )}

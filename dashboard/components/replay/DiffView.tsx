@@ -10,10 +10,10 @@ function diffLines(a: string, b: string) {
   const bLines = b.split("\n")
   const result: Array<{ type: "same" | "removed" | "added"; text: string }> = []
 
-  const aSet = new Set(aLines)
-  const bSet = new Set(bLines)
+  // const aSet = new Set(aLines)
+  // const bSet = new Set(bLines)
 
-  const maxLen = Math.max(aLines.length, bLines.length)
+  // const maxLen = Math.max(aLines.length, bLines.length)
   let ai = 0
   let bi = 0
 

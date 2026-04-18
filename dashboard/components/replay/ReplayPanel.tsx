@@ -9,10 +9,11 @@ import { DiffView } from "./DiffView"
 interface Props {
   traceId: string
   originalResponse?: unknown
-  requestBody?: unknown
+  requestBody?: unknown  // reserved for future use
 }
 
-export function ReplayPanel({ traceId, originalResponse, requestBody }: Props) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function ReplayPanel({ traceId, originalResponse, requestBody: _r }: Props) {
   const [promptOverride, setPromptOverride] = useState("")
   const [replaying, setReplaying] = useState(false)
   const [result, setResult] = useState<ReplayResponse | null>(null)
