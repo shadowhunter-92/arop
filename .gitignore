@@ -1,0 +1,28 @@
+# Python
+proxy/venv/
+proxy/__pycache__/
+proxy/**/__pycache__/
+proxy/*.pyc
+proxy/.env
+proxy/.pytest_cache/
+proxy/.coverage
+proxy/htmlcov/
+
+# Node
+dashboard/node_modules/
+dashboard/.next/
+dashboard/.env.local
+dashboard/out/
+
+# DB
+*.db
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

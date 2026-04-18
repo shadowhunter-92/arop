@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: arop
+      POSTGRES_USER: arop
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arop"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://arop:${POSTGRES_PASSWORD}@postgres:5432/arop
+      AROP_MASTER_KEY: ${AROP_MASTER_KEY:?set AROP_MASTER_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      HASH_PAYLOADS: ${HASH_PAYLOADS:-true}
+      STORE_RAW: ${STORE_RAW:-false}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_AROP_KEY: ${AROP_MASTER_KEY:-changeme}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - proxy
+
+volumes:
+  pgdata:
