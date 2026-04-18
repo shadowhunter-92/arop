@@ -18,6 +18,12 @@ dashboard/out/
 *.db
 *.sqlite3
 
+# Logs
+*.log
+proxy.log
+proxy-err.log
+dashboard.log
+
 # OS
 .DS_Store
 Thumbs.db
