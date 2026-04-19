@@ -2,7 +2,16 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from sqlalchemy.orm import DeclarativeBase
 from config import settings
 
-engine = create_async_engine(settings.database_url, echo=False)
+
+def _async_url(url: str) -> str:
+    """Force psycopg3 async driver regardless of what Railway provides."""
+    for prefix in ("postgresql://", "postgres://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg" + url[len(prefix) - 3:]
+    return url
+
+
+engine = create_async_engine(_async_url(settings.database_url), echo=False)
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 
