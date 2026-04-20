@@ -13,4 +13,4 @@ COPY . .
 EXPOSE 8080
 
 # Lifespan in main.py handles migrations + seeding on startup
-CMD ["sh", "-c", "echo CONTAINER_STARTED && echo PORT=$PORT && uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080} 2>&1"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
