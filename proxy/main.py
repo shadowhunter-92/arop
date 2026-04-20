@@ -35,10 +35,21 @@ logger = logging.getLogger("arop")
 
 
 async def _run_migrations() -> None:
-    """Create all ORM tables. The SQL seed file is handled by run_migrations.py."""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables ready.")
+    """Create all ORM tables. Retries up to 5 times with back-off."""
+    import asyncio
+    for attempt in range(1, 6):
+        try:
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("Database tables ready.")
+            return
+        except Exception as exc:
+            logger.warning("DB connection attempt %d/5 failed: %s", attempt, exc)
+            if attempt < 5:
+                await asyncio.sleep(attempt * 3)
+            else:
+                logger.error("Could not reach database after 5 attempts — startup continuing anyway.")
+                logger.error("DB error: %s", exc)
 
 
 async def _seed_default_key() -> None:
@@ -68,7 +79,10 @@ async def _seed_default_key() -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await _run_migrations()
-    await _seed_default_key()
+    try:
+        await _seed_default_key()
+    except Exception as exc:
+        logger.warning("Could not seed default key: %s", exc)
     yield
     await llm_client.close()
     await engine.dispose()
