@@ -1,0 +1,140 @@
+name: AROP Parallel Agents
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      role:
+        description: 'Run specific agent role (default: all)'
+        required: false
+        default: 'all'
+        type: choice
+        options: [all, researcher, coder, debugger, pm, marketer]
+  schedule:
+    # Supplemental trigger — ecosystem scheduler is primary; this is a backup
+    - cron: '0 3 * * 1'  # Monday 3am UTC (8am PKT) weekly backup run
+
+# ─── AROP Agent Team ───────────────────────────────────────────────────────
+# AI observability proxy and dashboard
+# All 5 specialist agents run in PARALLEL on every push.
+# ─────────────────────────────────────────────────────────────────────────────
+
+env:
+  PROJECT_SLUG: arop
+  PROJECT_NAME: AROP
+
+jobs:
+  parallel-agents:
+    name: "🤖 AROP :: ${{ matrix.role }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - role: researcher
+            model: mistral:7b
+            emoji: "🔬"
+            desc: "Market intel, competitor scan, tech trends"
+          - role: coder
+            model: qwen2.5-coder:7b
+            emoji: "💻"
+            desc: "Code review, bug detection, quality checks"
+          - role: debugger
+            model: qwen2.5-coder:7b
+            emoji: "🐛"
+            desc: "Error analysis, log scan, fix suggestions"
+          - role: pm
+            model: llama3.2:3b
+            emoji: "📋"
+            desc: "Milestone tracking, status update, blockers"
+          - role: marketer
+            model: llama3.2:3b
+            emoji: "📣"
+            desc: "Content creation, lead identification"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "${{ matrix.emoji }} AROP ${{ matrix.role }} — dispatch"
+        env:
+          AGENT_ROLE: ${{ matrix.role }}
+          AGENT_MODEL: ${{ matrix.model }}
+          GITHUB_SHA_SHORT: ${{ github.sha }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ECOSYSTEM_WEBHOOK: ${{ secrets.ECOSYSTEM_WEBHOOK }}
+        run: |
+          python3 - <<'PYEOF'
+          import os, json, requests, datetime
+
+          role = os.environ['AGENT_ROLE']
+          model = os.environ['AGENT_MODEL']
+          project = 'arop'
+
+          print(f"[{project.upper()}::{role.upper()}] Starting agent dispatch")
+          print(f"  Model: {model}")
+          print(f"  Commit: {os.environ.get('GITHUB_SHA_SHORT','')[:8]}")
+
+          payload = {
+              'project': project,
+              'role': role,
+              'model': model,
+              'trigger': 'github_actions',
+              'repo': os.environ.get('GITHUB_REPOSITORY', ''),
+              'branch': os.environ.get('GITHUB_REF_NAME', 'main'),
+              'commit': os.environ.get('GITHUB_SHA', '')[:8],
+              'actor': os.environ.get('GITHUB_ACTOR', 'bot'),
+              'ts': datetime.datetime.utcnow().isoformat(),
+          }
+
+          # Post to ecosystem webhook if configured (needs ECOSYSTEM_WEBHOOK secret)
+          webhook = os.environ.get('ECOSYSTEM_WEBHOOK', '')
+          if webhook:
+              try:
+                  r = requests.post(f'{webhook}/api/agent-trigger', json=payload, timeout=10)
+                  print(f"  Webhook response: {r.status_code}")
+              except Exception as e:
+                  print(f"  Webhook unreachable (local ecosystem): {e}")
+
+          # GitHub Step Summary
+          with open(os.environ.get('GITHUB_STEP_SUMMARY', '/dev/null'), 'w') as f:
+              f.write(f"""## {role.upper()} Agent dispatched for {project}
+
+| Field | Value |
+|-------|-------|
+| Project | `{project}` |
+| Role | `{role}` |
+| Model | `{model}` |
+| Branch | `{payload['branch']}` |
+| Commit | `{payload['commit']}` |
+| Actor | `{payload['actor']}` |
+
+The agent will process this on the next scheduler cycle and post results to Discord.
+""")
+          print(f"[{project.upper()}::{role.upper()}] Done")
+          PYEOF
+
+  # Summary job
+  summary:
+    name: "📊 AROP — All Agents Complete"
+    runs-on: ubuntu-latest
+    needs: parallel-agents
+    if: always()
+    steps:
+      - name: Write summary
+        run: |
+          echo "## 🤖 AROP Agent Team" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All 5 specialist agents dispatched in parallel:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Role | Model | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔬 Researcher | mistral:7b | ${{ needs.parallel-agents.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 💻 Coder | qwen2.5-coder:7b | ${{ needs.parallel-agents.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🐛 Debugger | qwen2.5-coder:7b | ${{ needs.parallel-agents.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📋 PM | llama3.2:3b | ${{ needs.parallel-agents.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📣 Marketer | llama3.2:3b | ${{ needs.parallel-agents.result }} |" >> $GITHUB_STEP_SUMMARY
