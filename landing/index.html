@@ -4,7 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AROP — AI Governance Platform</title>
-  <meta name="description" content="Every AI call your company makes — logged, audited, and controlled. Built for regulated industries." />
+
+  <!-- SEO -->
+  <meta name="description" content="Every AI call your company makes — logged, controlled, and compliant. AROP is the AI governance proxy built for regulated industries." />
+  <link rel="canonical" href="https://arop-dashboard.vercel.app" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AROP — AI you can actually audit." />
+  <meta property="og:description" content="Every model call your company makes — logged, controlled, and compliant. Built for healthcare, fintech, legal, and government teams." />
+  <meta property="og:image" content="https://arop-dashboard.vercel.app/og-image.png" />
+  <meta property="og:url" content="https://arop-dashboard.vercel.app" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AROP — AI you can actually audit." />
+  <meta name="twitter:description" content="Every model call your company makes — logged, controlled, and compliant. Built for regulated industries." />
+  <meta name="twitter:image" content="https://arop-dashboard.vercel.app/og-image.png" />
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -86,6 +103,64 @@
       transition: border-color 0.15s, color 0.15s;
     }
     .btn-secondary:hover { border-color: var(--subtle); color: var(--text); }
+
+    /* ── Waitlist form ── */
+    #waitlist-form {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      max-width: 560px; margin: 0 auto;
+    }
+    #waitlist-form input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      padding: 11px 16px;
+      outline: none;
+      transition: border-color 0.15s;
+      flex: 1; min-width: 160px;
+    }
+    #waitlist-form input::placeholder { color: var(--subtle); }
+    #waitlist-form input:focus { border-color: var(--indigo); }
+    #waitlist-form button {
+      background: var(--indigo); color: #fff;
+      border: none; cursor: pointer;
+      padding: 11px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 500;
+      transition: background 0.15s; white-space: nowrap;
+    }
+    #waitlist-form button:hover { background: #4f46e5; }
+    #waitlist-success {
+      display: none;
+      color: var(--green); font-size: 0.95rem; font-weight: 500;
+      padding: 12px; border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 8px; background: rgba(16,185,129,0.08);
+      max-width: 400px; margin: 0 auto;
+    }
+
+    /* ── Trusted by ── */
+    .trusted-by {
+      text-align: center;
+      padding: 32px 5% 36px;
+      border-bottom: 1px solid var(--border);
+    }
+    .trusted-by p {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--subtle);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .trusted-by-logos {
+      display: flex; flex-wrap: wrap; gap: 0;
+      justify-content: center; align-items: center;
+    }
+    .trusted-by-logos span {
+      font-size: 0.85rem; font-weight: 600; color: var(--muted);
+      padding: 6px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .trusted-by-logos span:last-child { border-right: none; }
 
     /* ── Problem strip ── */
     .problem-strip {
@@ -208,6 +283,39 @@
     .cta-section h2 { margin-bottom: 16px; }
     .cta-section p { color: var(--muted); margin-bottom: 32px; font-size: 1rem; }
 
+    /* ── CTA Waitlist form ── */
+    #cta-waitlist-form {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      max-width: 520px; margin: 0 auto;
+    }
+    #cta-waitlist-form input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      padding: 11px 16px;
+      outline: none;
+      transition: border-color 0.15s;
+      flex: 1; min-width: 160px;
+    }
+    #cta-waitlist-form input::placeholder { color: var(--subtle); }
+    #cta-waitlist-form input:focus { border-color: var(--indigo); }
+    #cta-waitlist-form button {
+      background: var(--indigo); color: #fff;
+      border: none; cursor: pointer;
+      padding: 11px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 500;
+      transition: background 0.15s; white-space: nowrap;
+    }
+    #cta-waitlist-form button:hover { background: #4f46e5; }
+    #cta-waitlist-success {
+      display: none;
+      color: var(--green); font-size: 0.95rem; font-weight: 500;
+      padding: 12px; border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 8px; background: rgba(16,185,129,0.08);
+      max-width: 400px; margin: 0 auto;
+    }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border);
@@ -220,6 +328,7 @@
     @media (max-width: 640px) {
       .nav-links { display: none; }
       .hero { padding: 60px 5% 50px; }
+      .trusted-by-logos span { border-right: none; padding: 4px 12px; }
     }
   </style>
 </head>
@@ -234,7 +343,7 @@
     <a href="#pricing">Pricing</a>
     <a href="#compare">vs competitors</a>
   </div>
-  <a href="mailto:hello@arop.dev" class="nav-cta">Get Early Access</a>
+  <a href="#waitlist-form" class="nav-cta">Get Early Access</a>
 </nav>
 
 <!-- Hero -->
@@ -243,14 +352,33 @@
     <span class="dot"></span>
     Built for regulated industries — healthcare, finance, legal
   </div>
-  <h1>Every AI call your company makes —<br /><em>logged, audited, and controlled</em></h1>
+  <h1>AI you can actually <em>audit.</em></h1>
   <p>
-    AROP sits between your application and any AI provider. One line of code change.
-    Full audit trail, guardrails, cost visibility, and data that never leaves your network.
+    Every model call your company makes — logged, controlled, and compliant.
   </p>
-  <div class="hero-actions">
-    <a href="mailto:hello@arop.dev" class="btn-primary">Get Early Access →</a>
-    <a href="#how" class="btn-secondary">See how it works</a>
+
+  <!-- Waitlist form -->
+  <form id="waitlist-form" action="https://formspree.io/f/xwkgpvqe" method="POST">
+    <input type="email" name="email" placeholder="your@company.com" required />
+    <input type="text" name="company" placeholder="Company name" />
+    <button type="submit">Request Access →</button>
+  </form>
+  <div id="waitlist-success">Thanks! We'll be in touch within 24h.</div>
+
+  <div style="margin-top: 16px;">
+    <a href="#how" class="btn-secondary" style="font-size: 0.875rem; padding: 9px 20px;">See how it works</a>
+  </div>
+</div>
+
+<!-- Trusted by -->
+<div class="trusted-by">
+  <p>Built for teams at</p>
+  <div class="trusted-by-logos">
+    <span>Healthcare Startups</span>
+    <span>Fintech</span>
+    <span>Legal Tech</span>
+    <span>Gov Contractors</span>
+    <span>Pharma &amp; Biotech</span>
   </div>
 </div>
 
@@ -518,7 +646,13 @@
   <div class="section-label">Get started</div>
   <h2>Your AI is already running.<br /><em>Is it governed?</em></h2>
   <p>Join the early access list. We're onboarding teams in regulated industries first.</p>
-  <a href="mailto:hello@arop.dev" class="btn-primary" style="font-size:1rem; padding: 14px 36px;">Get Early Access →</a>
+
+  <form id="cta-waitlist-form" action="https://formspree.io/f/xwkgpvqe" method="POST">
+    <input type="email" name="email" placeholder="your@company.com" required />
+    <input type="text" name="company" placeholder="Company name" />
+    <button type="submit">Request Access →</button>
+  </form>
+  <div id="cta-waitlist-success">Thanks! We'll be in touch within 24h.</div>
 </div>
 
 <!-- Footer -->
@@ -529,6 +663,31 @@
     <a href="mailto:hello@arop.dev" style="color: var(--subtle);">hello@arop.dev</a>
   </div>
 </footer>
+
+<script>
+  function handleFormSubmit(formId, successId) {
+    var form = document.getElementById(formId);
+    var success = document.getElementById(successId);
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var data = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      }).then(function(res) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      }).catch(function() {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      });
+    });
+  }
+  handleFormSubmit('waitlist-form', 'waitlist-success');
+  handleFormSubmit('cta-waitlist-form', 'cta-waitlist-success');
+</script>
 
 </body>
 </html>

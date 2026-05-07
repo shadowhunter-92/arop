@@ -28,6 +28,9 @@ dashboard.log
 .DS_Store
 Thumbs.db
 
+# Vercel
+.vercel/
+
 # IDE
 .vscode/
 .idea/

@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "arop-landing",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "landing", "-p", "4000", "-s"],
+      "port": 4000,
+      "cwd": "E:/arop"
+    }
+  ]
+}
